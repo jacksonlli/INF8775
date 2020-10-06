@@ -8,11 +8,15 @@ sys.setrecursionlimit(1500)
 
 def find_min_strip(points_y, d):
     strip_min = d
+    min_points = []
     l = len(points_y)
     for pos, pt1 in enumerate(points_y):
         for pt2 in points_y[(pos+1):(min(l, pos+7))]:
-            strip_min = min(strip_min, distance(pt1, pt2))
-    return strip_min   
+            dist = distance(pt1, pt2)
+            if dist < strip_min:
+                strip_min = dist
+                min_points = [pt1, pt2]
+    return strip_min, min_points
 
 
 
@@ -30,8 +34,8 @@ def DpR(points_x, points_y, seuil_recur):
     # Si le nombre de points est inférieur au seuil de récursivité, on change 
     # d'algorithme pour trouver la plus petite distance
     if nb_points <= seuil_recur:
-        min_dist = brute_force(points_x)
-        return min_dist
+        min_dist, min_points = brute_force(points_x)
+        return min_dist, min_points
 
     # On divise nos points en deux groupes, en fonction de leur abscisse
     # puis on cherche récursivement le minimum dans chaque groupe
@@ -52,22 +56,31 @@ def DpR(points_x, points_y, seuil_recur):
             right_group_y.append(p)
 
     # On appelle récursivement l'algo Diviser pour Régner
-    min_left = DpR(left_group_x, left_group_y, seuil_recur)
-    min_right = DpR(right_group_x, right_group_y, seuil_recur)
-    d = min(min_left, min_right)
+    min_dist_left, min_left_points = DpR(left_group_x, left_group_y, seuil_recur)
+    min_dist_right, min_right_points = DpR(right_group_x, right_group_y, seuil_recur)
+    if min_dist_left < min_dist_right:
+        d = min_dist_left
+        min_points = min_left_points
+    else:
+        d = min_dist_right
+        min_points = min_right_points
     
     # On construit une bande verticale dans laquelle les points ont une abscisse à moins
     # d'une distance d de middle_x à gauche et à droite (d = distance minimale trouvée
     # dans le groupe de gauche et dans le groupe de droite)
     strip = [p for p in points_y if abs(p[0] - middle_x) < d]
-    min_strip = find_min_strip(strip, d)
-    min_dist = min(d, min_strip)
+    min_strip, strip_points = find_min_strip(strip, d)
+    if min_strip < d:
+        min_dist = min_strip
+        min_points = strip_points
+    else:
+        min_dist = d
 
-    return min_dist
+    return min_dist, min_points
 
 def execute_DpR(sorted_points_x, sorted_points_y, seuil_recur):
     start = time.time()
-    min_dpr = DpR(sorted_points_x, sorted_points_y, seuil_recur)
+    min_dist_dpr, min_points_dpr = DpR(sorted_points_x, sorted_points_y, seuil_recur)
     end = time.time()
     # print("DPR: ", min_dpr)
-    return end - start
+    return end - start, min_dist_dpr, min_points_dpr

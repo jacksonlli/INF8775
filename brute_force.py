@@ -7,16 +7,19 @@ Si le nombre de points est suffisamment petit, on préfère utiliser cet algorit
 '''
 def brute_force(points):
     dist_min = MAX_DIST
+    points_min = []
     for pos, pt1 in enumerate(points):
         for pt2 in points[(pos+1):]:
             tmp_dist = distance(pt1, pt2)
-            dist_min = min(tmp_dist, dist_min)
-    return dist_min
+            if tmp_dist < dist_min:
+                dist_min = tmp_dist
+                points_min = [pt1, pt2]
+    return dist_min, points_min
 
 
 def execute_brute_force(points):
     start = time.time()
-    min_brute_force = brute_force(points)
+    dist_min_bf, points_min_bf = brute_force(points)
     end = time.time()
     # print("BF: ", min_brute_force)
-    return end-start
+    return end-start, dist_min_bf, points_min_bf
