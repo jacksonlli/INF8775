@@ -40,14 +40,14 @@ def main(algo, filepath):
         time_BF, dist_BF, points_BF = execute_brute_force(sorted_points_x)
         print("Time : ", time_BF)
         print("Minimum distance : ", dist_BF)
-        print("Corresponding Points: ", points_BF)
+        print("Solution Points: ", points_BF)
     
     elif algo == "DPR":
         # Exécuter l'algorithme Diviser pour régner
-        SEUIL_DPR = 3
+        SEUIL_DPR = 20
         time_DPR, dist_DPR, points_DPR = execute_DpR(sorted_points_x, sorted_points_y, SEUIL_DPR)
         print("Time : ", time_DPR)
         print("Minimum distance : ", dist_DPR)
-        print("Corresponding Points: ", points_DPR)
+        print("Solution Points: ", points_DPR)
         
 main(ALGO, FILE)
