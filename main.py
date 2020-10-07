@@ -38,8 +38,6 @@ compatible avec ce code (par exemple l'utilisation de flag -e, -a, (p et -t)).
 
 def main(algo, filepath, marker):
 
-    cwd = os.getcwd()
-    filepath = cwd + filepath
     POINTS = getPointsfromFile(filepath)
     sorted_points_x = sorted(POINTS, key=lambda x: x[0])
     sorted_points_y = sorted(POINTS, key=lambda x: x[1])
