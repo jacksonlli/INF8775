@@ -1,6 +1,8 @@
 import math
 
 GRID_SIZE = 1000000
+threshold_Arbitrary = 3
+threshold_Experimental = 20
 
 MAX_DIST =  math.sqrt(GRID_SIZE**2 + GRID_SIZE**2) # diagonale du carré de côté 1000000
 

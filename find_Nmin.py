@@ -33,14 +33,18 @@ def getAverageNminForSampleSize(test_directory, n):
     return int(sumNmin/i)
     
 def getOverallAverageNmin(test_directory):
-    path = "testsets"
     i = 0
     sumNmin = 0
-    for n in os.listdir(path):
-        nMin = getAverageNminForSampleSize(test_directory, n)
-        print("seuil de recursivité: " + str(nMin) + ", sample size: " + str(n))
-        sumNmin += nMin
-        i+=1
+    fn = os.path.join("nmin", "n_Min_by_trial_and_error.txt")
+    with open(fn, 'w') as f:
+        for n in os.listdir(test_directory):
+            nMin = getAverageNminForSampleSize(test_directory, n)
+            print("seuil de recursivité: " + str(nMin) + ", sample size: " + str(n))
+            f.write("seuil de recursivité: " + str(nMin) + ", sample size: " + str(n) + '\n')    
+            sumNmin += nMin
+            i+=1
+        f.write("seuil de recursivité moyenne: " + str(int(sumNmin/i)) + '\n')
+    f.close()
     return int(sumNmin/i)
     
 print(getOverallAverageNmin("testsets"))

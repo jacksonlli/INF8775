@@ -7,9 +7,9 @@ import os
 
 from brute_force import execute_brute_force
 from DpR import execute_DpR
-from utils import GRID_SIZE, getPointsfromFile
+from utils import GRID_SIZE, threshold_Experimental, threshold_Arbitrary, getPointsfromFile
 
-ALGO = sys.argv[1] # Algo à utiliser DPR ou BF
+ALGO = sys.argv[1] # Algo à utiliser brute, recursif (avec seuil arbitraire) ou seuil (recursif avec seuil experimental)
 FILE = sys.argv[2] # Filepath 
 if (len(sys.argv) < 4):
     MARKER = ""
@@ -38,8 +38,6 @@ compatible avec ce code (par exemple l'utilisation de flag -e, -a, (p et -t)).
 
 def main(algo, filepath, marker):
 
-    cwd = os.getcwd()
-    filepath = cwd + filepath
     POINTS = getPointsfromFile(filepath)
     sorted_points_x = sorted(POINTS, key=lambda x: x[0])
     sorted_points_y = sorted(POINTS, key=lambda x: x[1])
@@ -58,15 +56,29 @@ def main(algo, filepath, marker):
     
     elif algo == "recursif":
         # Exécuter l'algorithme Diviser pour régner
-        SEUIL_DPR = 20
+        SEUIL_DPR = threshold_Arbitrary
         time_DPR, dist_DPR, points_DPR = execute_DpR(sorted_points_x, sorted_points_y, SEUIL_DPR)
         if (marker == 'p'):
-            print("Minimum distance : ", dist_BF)
+            print("Minimum distance : ", dist_DPR)
         elif (marker == 't'):
-            print("Time : ", time_BF)
+            print("Time : ", time_DPR)
         else:
-            print("Time : ", time_BF)
-            print("Minimum distance : ", dist_BF)
-            print("Solution Points: ", points_BF)
+            print("Time : ", time_DPR)
+            print("Minimum distance : ", dist_DPR)
+            print("Solution Points: ", points_DPR)
         
+    elif algo == "seuil":
+        # Exécuter l'algorithme Diviser pour régner avec seuil de recursivite experimental
+        SEUIL_DPR = threshold_Experimental
+        time_DPR, dist_DPR, points_DPR = execute_DpR(sorted_points_x, sorted_points_y, SEUIL_DPR)
+        if (marker == 'p'):
+            print("Minimum distance : ", dist_DPR)
+        elif (marker == 't'):
+            print("Time : ", time_DPR)
+        else:
+            print("Time : ", time_DPR)
+            print("Minimum distance : ", dist_DPR)
+            print("Solution Points: ", points_DPR)
+            
 main(ALGO, FILE, MARKER)
+

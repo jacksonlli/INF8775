@@ -1,0 +1,11 @@
+seuil de recursivité: 7, sample size: 10
+seuil de recursivité: 35, sample size: 100
+seuil de recursivité: 16, sample size: 1000
+seuil de recursivité: 23, sample size: 10000
+seuil de recursivité: 18, sample size: 100000
+seuil de recursivité: 40, sample size: 50
+seuil de recursivité: 13, sample size: 500
+seuil de recursivité: 20, sample size: 5000
+seuil de recursivité: 17, sample size: 50000
+seuil de recursivité: 19, sample size: 500000
+seuil de recursivité moyenne: 20
