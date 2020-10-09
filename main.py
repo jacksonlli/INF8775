@@ -4,7 +4,7 @@ import sys
 import time
 import csv
 import os
-
+from decimal import *
 from brute_force import execute_brute_force
 from DpR import execute_DpR
 from utils import GRID_SIZE, threshold_Experimental, threshold_Arbitrary, getPointsfromFile
@@ -37,7 +37,7 @@ compatible avec ce code (par exemple l'utilisation de flag -e, -a, (p et -t)).
  '''
 
 def main(algo, filepath, marker):
-
+    getcontext().prec = 5000
     POINTS = getPointsfromFile(filepath)
     sorted_points_x = sorted(POINTS, key=lambda x: x[0])
     sorted_points_y = sorted(POINTS, key=lambda x: x[1])
@@ -50,7 +50,8 @@ def main(algo, filepath, marker):
         elif (marker == 't'):
             print("Time : ", time_BF)
         else:
-            print("Time : ", time_BF)
+            
+            print("Time : ", Decimal(time_BF))
             print("Minimum distance : ", dist_BF)
             print("Solution Points: ", points_BF)
     

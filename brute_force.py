@@ -1,5 +1,6 @@
 import time
 from utils import MAX_DIST, distance
+from decimal import *
 
 '''
 Algorithme Force Brute
@@ -18,8 +19,9 @@ def brute_force(points):
 
 
 def execute_brute_force(points):
-    start = time.time()
+    getcontext().prec = 50
+    start = Decimal(time.time())
     dist_min_bf, points_min_bf = brute_force(points)
-    end = time.time()
+    end = Decimal(time.time())
     # print("BF: ", min_brute_force)
     return end-start, dist_min_bf, points_min_bf

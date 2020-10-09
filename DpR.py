@@ -1,7 +1,7 @@
 import sys
 import time
 from utils import MAX_DIST, distance
-
+from decimal import *
 from brute_force import brute_force
 sys.setrecursionlimit(1500)
 
@@ -79,8 +79,9 @@ def DpR(points_x, points_y, seuil_recur):
     return min_dist, min_points
 
 def execute_DpR(sorted_points_x, sorted_points_y, seuil_recur):
-    start = time.time()
+    getcontext().prec = 5000
+    start = Decimal(time.time())
     min_dist_dpr, min_points_dpr = DpR(sorted_points_x, sorted_points_y, seuil_recur)
-    end = time.time()
+    end = Decimal(time.time())
     # print("DPR: ", min_dpr)
     return end - start, min_dist_dpr, min_points_dpr

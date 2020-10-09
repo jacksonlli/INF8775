@@ -3,6 +3,8 @@ from random import randint
 from utils import getPointsfromFile
 import os
 
+#code used to trial and test the recursion threshold until we find one that performs better than its neighbors.
+
 def getNminbyTrialAndError(filepath):
     
     POINTS = getPointsfromFile(filepath)
