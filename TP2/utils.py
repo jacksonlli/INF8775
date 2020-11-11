@@ -28,22 +28,25 @@ def createBlocks(path):
 			#fifth entry is Surface Area
 			blocks[i,4] = (blocks[i][1]*blocks[i][2])
 	return blocks
+    
 def printBlocks(Blocks):
 	for i in range(Blocks.shape[0]):
 		print("Dimensions of block ", i, " for each orientation:")
 		print ("h: ", Blocks[i,0], ", l: ", Blocks[i,1], ", p: ", Blocks[i,2],", ID: ", Blocks[i,3],", Surface Area: ", Blocks[i,4])
 
-#def sortBySA(unsorted):
-#	
-#	return sorted
+def sortBySA(blocks):
+    inc=np.argsort(blocks[:,4])#indexes of rows sorted according to last column in increasing order
+    dec = inc[::-1]#now in decreasing order
+    sorted_blocks=blocks[dec]#reorganise list according to "dec" indexes
+    return sorted_blocks
+    
+# def main(filepath):
 
-def main(filepath):
-
-	Blocks = createBlocks(filepath)
-	printBlocks(Blocks)
+	# Blocks = createBlocks(filepath)
+	# printBlocks(Blocks)
 	
 
-main(FILEPATH)
+# main(FILEPATH)
 	
 	
 		
