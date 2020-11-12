@@ -24,7 +24,7 @@ def main(algo, filepath, marker1, marker2):
     blocks = createBlocks(filepath)
     if algo == "vorace":
         # Exécuter l'algorithme Diviser pour régner
-        time_elapsed, height, tower = greedy(blocks)
+        time_elapsed, height, tower = execute_greedy(blocks)
         if (marker1 == 'p' or marker2 == 'p'):
             for block in tower:
                 print(block)
