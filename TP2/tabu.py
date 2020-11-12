@@ -3,7 +3,6 @@ import sys
 import numpy as np
 import time
 
-FILEPATH = sys.argv[1]
 
 def mustReplace(c,s):
 	fitsAbove = (c[1] < s[1]) and (c[2] < s[2]) #candidate fits above if the 2 surface dimensions are strictly less than the solution block
@@ -194,13 +193,12 @@ def tabu_search(blocks):
 			convCount += 1
 		prevS = newS
 
-	return bestH, bestS
+	return bestH, bestS[:, 0:3]
 
-def execute_tabu_search(filepath):
+def execute_tabu_search(blocks):
 	start = time.time()
-	height, blockList = tabu_search(createBlocks(filepath))
+	height, blockList = tabu_search(blocks)
 	#print(blockList)
 	#print(height)
 	end = time.time()
-	return (start - end), height, blockList
-execute_tabu_search(FILEPATH)
+	return (end - start), height, blockList

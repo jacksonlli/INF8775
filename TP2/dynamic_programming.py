@@ -9,10 +9,10 @@ def dyn_prog(blocks):
     h_tower = np.copy(sorted_blocks[:, 0]) #tableau de calculs for dynamic programming, initialised with block height
     pointers = [None] * n #refers to index of the block on top of the sub-tower
     isTerminated = [False] * n #terminated blocks have reached their optimal subsolution 
-    while False in isTerminated:# at most n/3 - 1 iterations
+    while False in isTerminated:# at most n iterations
         #Debugging---------------------
-        progress = isTerminated.count(True)
-        print(str(progress)+" / "+str(n)+", "+str(int(progress/n*100))+"%", end='\r')
+        #progress = isTerminated.count(True)
+        #print(str(progress)+" / "+str(n)+", "+str(int(progress/n*100))+"%", end='\r')
         #-------------------------------
         for k in range(n): #k is the index of the current block to be placed on top
             if not isTerminated[k]:
@@ -26,7 +26,7 @@ def dyn_prog(blocks):
                 if not canStillBePlaced:
                     isTerminated[k] = True
     index_max = np.argmax(h_tower)
-    print(str(n)+" / "+str(n)+", 100%")
+    #print(str(n)+" / "+str(n)+", 100%")
     return h_tower[index_max], getBlocksInTower(sorted_blocks[:, 0:3], pointers, index_max)
     
 def canPlaceBlock(blockK, blockI):
@@ -45,7 +45,7 @@ def blockAlreadyInTower(all_IDs, pointers, block_index, tower_top_block_index):#
     else:
         return False or blockAlreadyInTower(all_IDs, pointers, block_index, pointers[tower_top_block_index]) 
     
-def getBlocksInTower(block_Dims, pointers, top_block_index):#should be exactly N or n/3 iterations
+def getBlocksInTower(block_Dims, pointers, top_block_index):#should be less or equal to n iterations
     current_Block_Dims = block_Dims[top_block_index]
     if pointers[top_block_index] == None:
         return [[current_Block_Dims[0], current_Block_Dims[1], current_Block_Dims[2]]]
