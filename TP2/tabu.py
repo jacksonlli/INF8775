@@ -1,6 +1,7 @@
 from utils import createBlocks, printBlocks
 import sys
 import numpy as np
+import time
 
 FILEPATH = sys.argv[1]
 
@@ -156,7 +157,7 @@ def updateT(T,tabBlocks, C):
 	
 			
 	
-def execute_tabu_search(blocks):
+def tabu_search(blocks):
 	# Initial Candidates and Solution sets formed
 	C = blocks
 	i_0 = np.argmax(C[:,0]) # index of largest h
@@ -192,14 +193,14 @@ def execute_tabu_search(blocks):
 		else:
 			convCount += 1
 		prevS = newS
-	# end main loop
 
-	#print(C)
-	#print(prevS)
-	print(bestS)
-	#print(T)
+	return bestH, bestS
 
-	return bestS
-
-tower = execute_tabu_search(createBlocks(FILEPATH))
-#printBlocks(tower)
+def execute_tabu_search(filepath):
+	start = time.time()
+	height, blockList = tabu_search(createBlocks(filepath))
+	#print(blockList)
+	#print(height)
+	end = time.time()
+	return (start - end), height, blockList
+execute_tabu_search(FILEPATH)

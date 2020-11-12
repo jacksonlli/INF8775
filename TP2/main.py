@@ -41,7 +41,7 @@ def main(algo, filepath, marker):
         
     elif algo == "tabou":
         # Exécuter l'algorithme Diviser pour régner
-        time_elapsed, height, tower = tabou(blocks)
+        time_elapsed, height, tower = execute_tabu_search(blocks)
         if (marker == 'p'):
             for block in tower:
                 print(block)
