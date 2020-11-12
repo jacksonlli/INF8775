@@ -64,7 +64,7 @@ def updateS(c,S):
 					replaceIndices = [i]
 				else:
 					replaceIndices += [i]
-				tab = np.append(S[i],np.random.randint(7,11))
+				tab = np.append(S[i],np.random.randint(8,12))
 				tabBlocks = np.vstack((tabBlocks,tab))
 		#print("replaceIndices: ",replaceIndices)
 		# Delete bad blocks from S to form newS
@@ -93,7 +93,11 @@ def updateS(c,S):
 					_ , _ , fitsBelow = mustReplace(c,newS[j])
 					if(fitsBelow and (not inserted)):
 						newS = np.insert(newS, (j), c, 0)
-						inserted = True	
+						inserted = True
+				# finally, if c block fits on top of tower
+				_ , fitsAbove , _ = mustReplace(c,newS[j])
+				if(fitsAbove):
+					newS = np.vstack((newS, c))
 		
 
 	#print("newS: ", newS)
@@ -126,7 +130,7 @@ def updateT(T,tabBlocks, C):
 		# stack the tabu block back onto the candidates 
 		if(currentT[5] == 0):
 			newCandidate = np.delete(currentT,5)
-			newC = np.vstack((C, newCandidate))
+			newC = np.vstack((newCandidate, C))
 			newT = np.array([])
 		# if we don't hit zero on tabu counter, pass
 		else:
@@ -140,9 +144,9 @@ def updateT(T,tabBlocks, C):
 		newC = C	
 		for i in range(currentT.shape[0]): 	# iterate over Tabu list
 			currentT[i,5] -= 1 		# decrement tabu counter value
-			if(currentT[i,5] == 0):		# if counter zero stack the current tabu block under C
+			if(currentT[i,5] == 0):		# if counter zero stack the current tabu block on top of C
 				newCandidate = np.delete(currentT[i],5,0)
-				newC = np.vstack((newC,newCandidate))
+				newC = np.vstack((newCandidate,C))
 			else:				# else, stack current block in newT
 				newT = np.vstack((newT,currentT[i]))
 		# Two cases:
@@ -159,7 +163,8 @@ def updateT(T,tabBlocks, C):
 def tabu_search(blocks):
 	# Initial Candidates and Solution sets formed
 	C = blocks
-	i_0 = np.argmax(C[:,0]) # index of largest h
+	i_0 = np.argmin(C[:,0])  # index of largest h
+	#i_0 = np.random.randint(blocks.shape[0])
 	prevS = np.zeros(5,int)
 	prevS = C[i_0]
 	bestS = prevS
