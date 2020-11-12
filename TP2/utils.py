@@ -3,9 +3,6 @@ import os
 
 import numpy as np
 
-FILEPATH = sys.argv[1]
-
-
 def createBlocks(path):
 	# path is a string containing absolute path from 
 	# Isolate the sample size from the path string
@@ -17,7 +14,7 @@ def createBlocks(path):
 
 	# Instantiate blocks array with:
 	# B = numLines x { h | l | p | ID | SurfaceArea }
-	blocks = np.zeros((numLines,5),dtype=int)
+	blocks = np.zeros((numLines,5),dtype='int64')
 	with open(path,"r") as infile:
 		for i in range(numLines):
 			# store h,l,p as first three entries
@@ -27,7 +24,7 @@ def createBlocks(path):
 			blocks[i,3] = int(i//3)
 			#fifth entry is Surface Area
 			blocks[i,4] = (blocks[i][1]*blocks[i][2])
-	return blocks, numLines
+	return blocks
     
 def printBlocks(Blocks):
 	for i in range(Blocks.shape[0]):

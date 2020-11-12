@@ -3,29 +3,30 @@ import sys
 import numpy as np
 import time
 
-FILEPATH = sys.argv[1]
-
-def dyn_prog(blocks, n):#n in this case is actually 3N, where N is the number of unique blocks
+def dyn_prog(blocks):
+    n = blocks.shape[0]#n in this case is actually 3N, where N is the number of unique blocks
     sorted_blocks = sortBySAIncreasing(blocks)#sorted in increasing surface area
     h_tower = np.copy(sorted_blocks[:, 0]) #tableau de calculs for dynamic programming, initialised with block height
     pointers = [None] * n #refers to index of the block on top of the sub-tower
     isTerminated = [False] * n #terminated blocks have reached their optimal subsolution 
-    inn = 0
     while False in isTerminated:# at most n/3 - 1 iterations
-        print(inn)
-        inn += 1
+        #Debugging---------------------
+        progress = isTerminated.count(True)
+        print(str(progress)+" / "+str(n)+", "+str(int(progress/n*100))+"%", end='\r')
+        #-------------------------------
         for k in range(n): #k is the index of the current block to be placed on top
             if not isTerminated[k]:
                 canStillBePlaced = False
                 for i in range(k+1,n): #i is the index of the top block of a subtower on which we place k
                     if not isTerminated[i] and canPlaceBlock(sorted_blocks[k], sorted_blocks[i]):
-                        if worthPlacingBlock(sorted_blocks[k, 0], h_tower[i], h_tower[k]) and not blockAlreadyInTower(sorted_blocks[:, 3], pointers, k, i):
+                        if worthPlacingBlock(sorted_blocks[k, 0], h_tower[i], h_tower[k]): #and not blockAlreadyInTower(sorted_blocks[:, 3], pointers, k, i):
                             h_tower[k] = sorted_blocks[k, 0] + h_tower[i]
                             pointers[k] = i
                         canStillBePlaced = True
                 if not canStillBePlaced:
                     isTerminated[k] = True
     index_max = np.argmax(h_tower)
+    print(str(n)+" / "+str(n)+", 100%")
     return h_tower[index_max], getBlocksInTower(sorted_blocks[:, 0:3], pointers, index_max)
     
 def canPlaceBlock(blockK, blockI):
@@ -50,14 +51,10 @@ def getBlocksInTower(block_Dims, pointers, top_block_index):#should be exactly N
         return [[current_Block_Dims[0], current_Block_Dims[1], current_Block_Dims[2]]]
     return getBlocksInTower(block_Dims, pointers, pointers[top_block_index]) + [[current_Block_Dims[0], current_Block_Dims[1], current_Block_Dims[2]]]
 
-def execute_dynamic_programming(blocks, n):
+def execute_dynamic_programming(blocks):
     start = time.time() 
-    height, blockList = dyn_prog(blocks, n)
+    height, blockList = dyn_prog(blocks)
     end = time.time()
     return end - start, height, blockList
-
-blocks, n = createBlocks(FILEPATH)
-t, h, l = execute_dynamic_programming(blocks, n)
-print(t)
 
 
