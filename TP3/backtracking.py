@@ -1,5 +1,6 @@
 from util_init import manDist
 from copy import deepcopy
+from params import TOL
 
 def backtracking(candidateList, currentConscrip, max_dist, k, depth, currentSum, bestConscrip, bestScore, visitedList, isValid):
 	if depth == k:
@@ -13,7 +14,6 @@ def backtracking(candidateList, currentConscrip, max_dist, k, depth, currentSum,
 			newConscrip = currentConscrip.copy()
 			newConscrip.append(muni)
 			visitedList[muni[0]][muni[1]] = True
-			
 			newSum = currentSum + muni[2]
 			resultingConscrip, resultingScore, isValid = backtracking(newCandidateList, newConscrip, max_dist, k, depth + 1, newSum, bestConscrip, bestScore, deepcopy(visitedList), isValid)
 			if isNewConscripBetter(bestScore, resultingScore):
@@ -33,8 +33,9 @@ def getCurrentSum(currentConscrip):
 	return currentSum
 	
 def shouldPruneBranch(maxS, minS, bestS):
+	
 	if bestS:
-		if bestS > 50 and bestS <= 50.1:
+		if bestS > 50 and bestS <= 50+TOL:
 			return True
 		elif minS > 50 and bestS > 50 and bestS <= minS:
 			return True

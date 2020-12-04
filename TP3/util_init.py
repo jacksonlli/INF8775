@@ -6,7 +6,7 @@ import random
 def createMuniField(path):	# creates a 2d-list of municipalities [y,x] 
 				# that is y rows by x columns
 	with open(path,"r") as infile:
-		xy = infile.readline().split(" ")
+		xy = infile.readline().split()
 		x = int(xy[0])
 		y = int(xy[1])
 		field = [[0] * x for i in range(y)]
@@ -14,7 +14,7 @@ def createMuniField(path):	# creates a 2d-list of municipalities [y,x]
 		for i in range(x):
 			formattedData.append([])
 		for j in range(y):
-			row = infile.readline().split("  ")
+			row = infile.readline().split()
 			for k in range(x):
 				field[j][k] = int(row[k])
 				formattedData[k].append((k, j, field[j][k]))
@@ -81,20 +81,24 @@ def random_expand(data, initMuni, max_dist, x, y, k, iter_lim):
 		currentConscrip = initConscrip.copy()
 		visitedList = [[False for y in range(y)] for i in range(x)]
 		for j in range(k):
-			# choose one candidate at random
-			chooseX = random.randint(xMin, xMax)
-			chooseY = random.randint(yMin, yMax)
-			#print("Proposed addition", data[chooseX][chooseY])
-			# check if the proposed conscription is legal
-			if(isLegalConscrip(currentConscrip, data[chooseX][chooseY], max_dist)):
-				failed = False
-				currentConscrip.append(data[chooseX][chooseY])
-				visitedList[chooseX][chooseY] = True
-			else:
-				failed = True
+			for l in range(round(iter_lim/2)):#attempt to add a muni to the conscrip with limited attempts
+				# choose one candidate at random
+				chooseX = random.randint(xMin, xMax)
+				chooseY = random.randint(yMin, yMax)
+				#print("Proposed addition", data[chooseX][chooseY])
+				# check if the proposed conscription is legal
+				if(isLegalConscrip(currentConscrip, data[chooseX][chooseY], max_dist)):
+					failed = False
+					currentConscrip.append(data[chooseX][chooseY])
+					visitedList[chooseX][chooseY] = True
+					break
+				else:
+					failed = True
+			if failed:#if did not manage to add muni to conscrip, start over from 0
 				break
-		if not failed:		
+		if not failed: #if successfully added all k muni, return the conscrip
 			visitedList[x0][y0] = True
+			print("Expansion Success!")
 			return currentConscrip, failed, visitedList
 	return initConscrip, failed, []
 
