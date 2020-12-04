@@ -163,7 +163,7 @@ def updateT(T,tabBlocks, C):
 def tabu_search(blocks):
 	# Initial Candidates and Solution sets formed
 	C = blocks
-	i_0 = np.argmin(C[:,0])  # index of largest h
+	i_0 = np.argmax(C[:,0])  # index of largest h
 	#i_0 = np.random.randint(blocks.shape[0])
 	prevS = np.zeros(5,int)
 	prevS = C[i_0]
