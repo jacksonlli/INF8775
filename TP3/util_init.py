@@ -40,13 +40,6 @@ def initCandidateList(data, conscrip, max_dist, x, y):
 				candidateList.append(data[i][j])
 	return candidateList
 
-def updateCandidateList(candidateList, newMuni, max_dist):
-	newCandidateList = []
-	for muni in candidateList:
-		dist = manDist(muni, newMuni)
-		if(dist <= max_dist):
-			newCandidateList.append(muni)
-	return newCandidateList
 
 def subArrayBounds(x0, y0, max_dist, x, y):
 	xMax = x0 + max_dist
@@ -82,6 +75,7 @@ def random_expand(data, initMuni, max_dist, x, y, k, iter_lim):
 	initConscrip.append(initMuni)
 	x0, y0, _ = initMuni
 	xMax, xMin, yMax, yMin = subArrayBounds(x0, y0, max_dist, x, y)
+	failed = True
 	print("Begin Expansion Loop...")
 	for i in range(iter_lim):
 		currentConscrip = initConscrip.copy()

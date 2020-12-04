@@ -1,4 +1,5 @@
-from util_init import updateCandidateList
+from util_init import manDist
+from copy import deepcopy
 
 def backtracking(candidateList, currentConscrip, max_dist, k, depth, currentSum, bestConscrip, bestScore, visitedList, isValid):
 	if depth == k:
@@ -8,14 +9,13 @@ def backtracking(candidateList, currentConscrip, max_dist, k, depth, currentSum,
 		for muni in candidateList:
 			if shouldPruneBranch(maxPossibleScore, minPossibleScore, bestScore):
 				return bestConscrip, bestScore, isValid
-			elif visitedList[muni[0]][muni[1]]:
-				continue
-			newCandidateList = updateCandidateList(candidateList, muni, max_dist)
+			newCandidateList = updateCandidateList(candidateList, muni, max_dist, visitedList)
 			newConscrip = currentConscrip.copy()
 			newConscrip.append(muni)
 			visitedList[muni[0]][muni[1]] = True
+			
 			newSum = currentSum + muni[2]
-			resultingConscrip, resultingScore, isValid = backtracking(newCandidateList, newConscrip, max_dist, k, depth + 1, newSum, bestConscrip, bestScore, visitedList, isValid)
+			resultingConscrip, resultingScore, isValid = backtracking(newCandidateList, newConscrip, max_dist, k, depth + 1, newSum, bestConscrip, bestScore, deepcopy(visitedList), isValid)
 			if isNewConscripBetter(bestScore, resultingScore):
 				bestConscrip = resultingConscrip
 				bestScore = resultingScore
@@ -34,7 +34,7 @@ def getCurrentSum(currentConscrip):
 	
 def shouldPruneBranch(maxS, minS, bestS):
 	if bestS:
-		if bestS == 51:
+		if bestS > 50 and bestS <= 50.1:
 			return True
 		elif minS > 50 and bestS > 50 and bestS <= minS:
 			return True
@@ -53,3 +53,11 @@ def isNewConscripBetter(oldScore, newScore):#the idea is to aim for a score abov
 		else:#both strictly above 50 or both 50 and below you want to pick the smallest
 			return True if newScore < oldScore else False
 	return True
+	
+def updateCandidateList(candidateList, newMuni, max_dist, visitedList):
+	newCandidateList = []
+	for muni in candidateList:
+		dist = manDist(muni, newMuni)
+		if(dist <= max_dist and dist>0 and not visitedList[muni[0]][muni[1]]):
+			newCandidateList.append(muni)
+	return newCandidateList
