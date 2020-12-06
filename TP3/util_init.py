@@ -15,6 +15,10 @@ def createMuniField(path):	# creates a 2d-list of municipalities [y,x]
 			row = infile.readline().split()
 			for k in range(x):
 				field[j][k] = int(row[k])
+				# if (k==0 and y==0) or (k==x-1 and j==y-1) or (k==0 and j==y-1) or (k==x-1 and j==0):
+					#prioritize putting the corners to the front for init municipalities
+					# availableMuni.insert(0, (k, j, field[j][k]))
+				# else:
 				availableMuni.append((k, j, field[j][k]))
 	return x, y, availableMuni
 
@@ -69,21 +73,25 @@ def random_expand(availMuni, initMuni, max_dist, x, y, k, iter_lim):
 	x0, y0, _ = initMuni
 	failed = True
 	#print("Begin Expansion Loop...")
+	
 	for i in range(iter_lim):
+		availMuniCopy = availMuni.copy()
 		currentConscrip = initConscrip.copy()
 		visitedList = [[False for y in range(y)] for i in range(x)]
+		if k == 0:
+			visitedList[x0][y0] = True
+			return initConscrip, False, visitedList, availMuniCopy
 		for j in range(k):
 			for l in range(round(iter_lim/2)):#attempt to add a muni to the conscrip with limited attempts
 				# choose one candidate at random
-				choose = random.randint(0, len(availMuni) - 1)
-				chosenMuni = availMuni[choose]
-				#print("Proposed addition", data[chooseX][chooseY])
+				choose = random.randint(0, len(availMuniCopy) - 1)
+				chosenMuni = availMuniCopy[choose]
 				# check if the proposed conscription is legal
 				if(isLegalConscrip(currentConscrip, chosenMuni, max_dist)):
 					failed = False
 					currentConscrip.append(chosenMuni)
 					visitedList[chosenMuni[0]][chosenMuni[1]] = True
-					availMuni.pop(choose)
+					availMuniCopy.pop(choose)
 					break
 				else:
 					failed = True
@@ -92,8 +100,8 @@ def random_expand(availMuni, initMuni, max_dist, x, y, k, iter_lim):
 		if not failed: #if successfully added all k muni, return the conscrip
 			visitedList[x0][y0] = True
 			#print("Expansion Success!")
-			return currentConscrip, failed, visitedList
-	return initConscrip, failed, []
+			return currentConscrip, failed, visitedList, availMuniCopy
+	return initConscrip, failed, [], []
 
 def updateAvailableMunicipality(conscrip, availMuniList):
 	if conscrip:
