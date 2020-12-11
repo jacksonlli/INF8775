@@ -5,17 +5,19 @@ from params import RANDMUNIRATIO
 import sys
 import random
 
+sys.setrecursionlimit(15000)
+
 FILEPATH = sys.argv[1]
 M = sys.argv[2]
 m = int(M)
 
 x, y, data = createMuniField(FILEPATH)
 
-greedyOut = greedy(x, y, data, m)
+start = time.time()
+isValid, greedyOut = getInitConscriptions(x, y, data, m)
+end = time.time()
 
+print(isValid)
 print(greedyOut)
 printDists(x, y, greedyOut)
-
-
-
-	
+print("Time ", end - start)
