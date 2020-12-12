@@ -11,11 +11,9 @@ m = int(M)
 
 x, y, data = createMuniField(FILEPATH)
 
-greedyOut = greedy(x, y, data, m)
-
-print(greedyOut)
+start = time.time()
+isValid, greedyOut, conscripList = getInitConscriptions(x, y, data, m)
+print("done!")
+end = time.time()
 printDists(x, y, greedyOut)
-
-
-
-	
+print("Time ", end - start)
