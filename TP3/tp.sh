@@ -7,4 +7,4 @@ do
 		p) marker1='p';;
 	esac
 done
-python3 main.py $ext $con $marker1
+python3 main_12_9.py $ext $con $marker1
