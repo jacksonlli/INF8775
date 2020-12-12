@@ -1,19 +1,21 @@
 from utils_12_9 import *
-from backtracking import backtracking, getCurrentSum
 import time
-from params import RANDMUNIRATIO
 import sys
-import random
 
 FILEPATH = sys.argv[1]
 M = sys.argv[2]
 m = int(M)
-
+MARKER1 = ""
+if (len(sys.argv) >= 4):
+    MARKER1 = sys.argv[3]
+	
 x, y, data = createMuniField(FILEPATH)
 
-start = time.time()
+#start = time.time()
 isValid, greedyOut, conscripList = getInitConscriptions(x, y, data, m)
-print("done!")
-end = time.time()
-printDists(x, y, greedyOut)
-print("Time ", end - start)
+#end = time.time()
+if MARKER1 == 'p':
+	printDists(x, y, greedyOut)
+else:
+	print(score(greedyOut))
+#print("Time ", end - start)

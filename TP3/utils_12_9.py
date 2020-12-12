@@ -45,12 +45,15 @@ def getInitConscriptions(x, y, data, m):
 		conscripList.append([])
 	
 	conscripsFilled = 0
-	return greedyInitialization(0, 0, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, 0, 0, 1)
+	return greedyInitialization(x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim)
 
 
-def greedyInitialization(j, i, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, oldestUnfinishedConscrip, cycleIndex, direction):
-	
-	while True:
+def greedyInitialization(x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim):
+	j = 0
+	i = 0
+	cycleIndex = 0
+	direction = 1
+	for iteration in range(x*y+1):
 		#print("called, "+str(i)+" "+str(j))
 		if i>=y:
 			return True, data, conscripList
@@ -74,7 +77,7 @@ def greedyInitialization(j, i, x, y, data, conscripList, conscripsFilled, a, cei
 				j, i, direction = getNewIndices(j, i, x, y, cycleIndex, direction)
 				cycleIndex = (cycleIndex+1)%4
 				break#muni is assigned to a conscrip, move on to next
-	return False, data, conscriptList #muni cannot be added to any conscription
+	return False, data, conscripList #muni cannot be added to any conscription
 	
 
 def getNewIndices(j, i, x, y, currentCycleIndex, direction):#this algo assumes the width is divisable by 2
@@ -104,3 +107,15 @@ def isLegalConscrip(conscrip, x, y, max_dist):#O(n)
 		if(dist > max_dist or dist == 0):
 			return False
 	return True
+	
+def score(conscripList):
+	score = 0
+	conscripScore = 0
+	for conscrip in conscripList:
+		conscripScore = 0
+		for muni in conscrip:
+			conscripScore += muni[2]
+		conscripScore /= len(conscrip)
+		if conscripScore > 50:
+			score +=1
+	return score
