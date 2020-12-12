@@ -90,13 +90,13 @@ def getInitConscriptions(x, y, data, m):
 		conscripList.append([])
 	
 	conscripsFilled = 0
-	return dps_greedy(0, 0, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, 0)[:-1]
+	return dps_greedy(0, 0, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, 0, 0, 1)
 
-def dps_greedy(j, i, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, oldestUnfinishedConscrip):#where i goes from 0 to y-1, j from 0 to x-1
+def dps_greedy(j, i, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, oldestUnfinishedConscrip, cycleIndex, direction):#where i goes from 0 to y-1, j from 0 to x-1
 	#if base case where we have gone through all rows without failing
 	print("called, "+str(i)+" "+str(j))
 	if i>=y:
-		return True, data, None
+		return True, data, conscripList
 	#try to add muni to a conscription
 	#elif conscripList[oldestUnfinishedConscrip] and i > conscripList[oldestUnfinishedConscrip][0][1]+distLim:#prune
 	#	#print(oldestUnfinishedConscrip, conscripList[oldestUnfinishedConscrip][0][1]+distLim)
@@ -123,19 +123,15 @@ def dps_greedy(j, i, x, y, data, conscripList, conscripsFilled, a, ceilVal, floo
 					oldestUnfinishedConscrip = updateOldestUnfinishedConscrip(conscripList, a, ceilVal, floorVal)
 			else:
 				conscripsFilledNew = conscripsFilled
-			jNew = j + 1#move along x axis
-			if jNew >= x:
-				jNew = 0
-				iNew = i + 1
-			else:
-				iNew = i
+			
+			jNew, iNew, directionNew = getNewIndices(j, i, x, y, cycleIndex, direction)
 			#recursive backtracking to get resulting list of conscriptions as well as a isValid bool
-			isValid, returnedData, backtrackConscript = dps_greedy(jNew, iNew, x, y, data, conscripList, conscripsFilledNew, a, ceilVal, floorVal, m, distLim, oldestUnfinishedConscrip)			
+			isValid, returnedData, _ = dps_greedy(jNew, iNew, x, y, data, conscripList, conscripsFilledNew, a, ceilVal, floorVal, m, distLim, oldestUnfinishedConscrip, (cycleIndex+1)%4, directionNew)			
 			print("return, "+str(i)+" "+str(j))
 			#printDists(x, y, returnedData)
 			#dps found an answer
 			if isValid:
-				return True, returnedData, None
+				return True, returnedData, conscripList
 			#else dps failed for this muni conscrip pair, try again with a different conscription for this muni
 			else:
 				data[i][j][3] = None
@@ -143,10 +139,10 @@ def dps_greedy(j, i, x, y, data, conscripList, conscripsFilled, a, ceilVal, floo
 				#print(oldestUnfinishedConscrip)
 				#print(conscripsFilledNew)
 				#printDists(x, y, returnedData)
-				print(backtrackConscript, k)
-				if not oldestUnfinishedConscrip == k:#break from loop until we are back trying to fill the oldest unfinished conscription
-					return False, data, backtrackConscript
-	return False, data, oldestUnfinishedConscrip #muni cannot be added to any conscription
+				#print(oldestUnfinishedConscrip, k)
+				if not oldestUnfinishedConscrip == k:#break from loop until we are back trying to fill the oldest unfinished conscription #######idea try: save backtrack index instead of conscript number
+					return False, data, conscripList
+	return False, data, conscriptList #muni cannot be added to any conscription
 
 def updateOldestUnfinishedConscrip(conscripList, a, ceilVal, floorVal):
 	k = 0
@@ -160,6 +156,27 @@ def updateOldestUnfinishedConscrip(conscripList, a, ceilVal, floorVal):
 			return k
 		k+=1
 	return -1
+
+def getNewIndices(j, i, x, y, currentCycleIndex, direction):#this algo assumes the width is divisable by 2
+	if currentCycleIndex == 0:#move from top left to top right (for the direction from left to right case)
+		jNew = j + direction
+		iNew = i
+	elif currentCycleIndex == 1:#move from top right to bottom left
+		jNew = j - direction
+		iNew = i + 1
+	elif currentCycleIndex == 2:#move from bottom left to bottom right
+		jNew = j + direction#move along x axis
+		iNew = i
+	elif currentCycleIndex == 3:#move from bottom right to top left block of next cycle
+		jNew = j + direction#move along x axis
+		iNew = i - 1
+		if jNew >= x or jNew < 0:#change line and direction
+			jNew = j
+			iNew = i + 1
+			direction *= -1
+	else:
+		print("error")
+	return jNew, iNew, direction
 
 def isLegalConscrip(conscrip, x, y, max_dist):#O(n)
 	for muni in conscrip:

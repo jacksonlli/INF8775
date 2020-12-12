@@ -5,7 +5,7 @@ from params import RANDMUNIRATIO
 import sys
 import random
 
-sys.setrecursionlimit(15000)
+sys.setrecursionlimit(10**9)
 
 FILEPATH = sys.argv[1]
 M = sys.argv[2]
@@ -14,10 +14,11 @@ m = int(M)
 x, y, data = createMuniField(FILEPATH)
 
 start = time.time()
-isValid, greedyOut = getInitConscriptions(x, y, data, m)
+isValid, greedyOut, conscripList = getInitConscriptions(x, y, data, m)
+print("done!")
 end = time.time()
 
 print(isValid)
-print(greedyOut)
+#print(greedyOut)
 printDists(x, y, greedyOut)
 print("Time ", end - start)
