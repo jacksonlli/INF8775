@@ -90,11 +90,11 @@ def getInitConscriptions(x, y, data, m):
 		conscripList.append([])
 	
 	conscripsFilled = 0
-	return dps_greedy(0, 0, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, 0, 0, 1)
+	return greedyInitialization(0, 0, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, 0, 0, 1)
 
 def dps_greedy(j, i, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, oldestUnfinishedConscrip, cycleIndex, direction):#where i goes from 0 to y-1, j from 0 to x-1
 	#if base case where we have gone through all rows without failing
-	print("called, "+str(i)+" "+str(j))
+	#print("called, "+str(i)+" "+str(j))
 	if i>=y:
 		return True, data, conscripList
 	#try to add muni to a conscription
@@ -127,7 +127,7 @@ def dps_greedy(j, i, x, y, data, conscripList, conscripsFilled, a, ceilVal, floo
 			jNew, iNew, directionNew = getNewIndices(j, i, x, y, cycleIndex, direction)
 			#recursive backtracking to get resulting list of conscriptions as well as a isValid bool
 			isValid, returnedData, _ = dps_greedy(jNew, iNew, x, y, data, conscripList, conscripsFilledNew, a, ceilVal, floorVal, m, distLim, oldestUnfinishedConscrip, (cycleIndex+1)%4, directionNew)			
-			print("return, "+str(i)+" "+str(j))
+			#print("return, "+str(i)+" "+str(j))
 			#printDists(x, y, returnedData)
 			#dps found an answer
 			if isValid:
@@ -144,6 +144,35 @@ def dps_greedy(j, i, x, y, data, conscripList, conscripsFilled, a, ceilVal, floo
 					return False, data, conscripList
 	return False, data, conscriptList #muni cannot be added to any conscription
 
+
+def greedyInitialization(j, i, x, y, data, conscripList, conscripsFilled, a, ceilVal, floorVal, m, distLim, oldestUnfinishedConscrip, cycleIndex, direction):
+	
+	while True:
+		#print("called, "+str(i)+" "+str(j))
+		if i>=y:
+			return True, data, conscripList
+		muni = data[i][j]#data stores all the municipalities, conscripList stores the current conscriptions
+		if(conscripsFilled >= a):	# Switch floorVal for ceilVal if a conscrips have been filled [theta(1)]
+			currentMuniLimit = ceilVal
+		else:
+			currentMuniLimit = floorVal
+		for k in range(conscripsFilled, m):
+			isLegal = False
+			if(len(conscripList[k]) == 0):
+				isLegal = True
+			else:
+				isLegal = isLegalConscrip(conscripList[k], j, i, distLim)
+				
+			if(isLegal and (len(conscripList[k]) < currentMuniLimit)):#a valid conscription to add muni is found
+				data[i][j][3] = k
+				conscripList[k].append(data[i][j])
+				if(len(conscripList[k]) >= currentMuniLimit):
+					conscripsFilled = conscripsFilled + 1
+				j, i, direction = getNewIndices(j, i, x, y, cycleIndex, direction)
+				cycleIndex = (cycleIndex+1)%4
+				break#muni is assigned to a conscrip, move on to next
+	return False, data, conscriptList #muni cannot be added to any conscription
+	
 def updateOldestUnfinishedConscrip(conscripList, a, ceilVal, floorVal):
 	k = 0
 	currentMuniLimit = None
